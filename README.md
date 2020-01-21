@@ -18,7 +18,7 @@ flume + kafka + structured streaming + phoenix 计算用户实时偏好写入Hba
 ## 日志格式
 **json格式，记录用户名，行为类型，商品ID，小类ID，行为时间，查看kafka接受到的数据**
 ```
-kafka-console-consumer -bootstrap-server localhost:9092 -topic mylog -from-beginning
+kafka-console-consumer -bootstrap-server localhost:9092 -topic shoppingmall_log -from-beginning
 ```
 ```
 {"user": "unk8", "behavior": "view", "item": "4535", "pty3": 23050303, "time": 1579587303210}

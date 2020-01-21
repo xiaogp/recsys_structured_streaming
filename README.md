@@ -1,11 +1,14 @@
 ## 整体流程
 **（一）用户行为收集：** 
+
 flume + kafka + structured streaming + phoenix 将用户浏览，购买行为写入Hbase
 
 **（二）实时商品热度统计：** 
+
 flume + kafka + structured streaming + phoenix 计算商品的实时热度排名，写入Hbase做冷启动热门推荐和召回补足
 
 **（三）实时用户偏好计算：** 
+
 flume + kafka + structured streaming + phoenix 计算用户实时偏好写入Hbase用户画像，基于elasticsearch查询符合用户偏好的新品
 
 
@@ -30,6 +33,7 @@ kafka-console-consumer -bootstrap-server localhost:9092 -topic mylog -from-begin
 0: jdbc:phoenix:> CREATE TABLE HOT_ITEM_STATIS (HOUR VARCHAR NOT NULL PRIMARY KEY, HOT VARCHAR) SPLIT ON ('1', '2', '3', '4', '5', '6', '7', '8', '9');
 ```
 **提交spark流处理任务**
+
 每隔1个小时统计商品热度排名，商品热度权重：浏览1分，加入购物车2分，购买3分，groupBy求和取排名前200
 ```
 /usr/local/Cellar/apache-spark/2.4.4/libexec/bin/spark-submit \
@@ -40,6 +44,7 @@ kafka-console-consumer -bootstrap-server localhost:9092 -topic mylog -from-begin
 /usr/local/Cellar/apache-spark/2.4.4/jobs/recsys-1.0-SNAPSHOT.jar
 ```
 **查询phoenix结果**
+
 查询每个小时段，最热门的商品ID序列
 ```
 0: jdbc:phoenix:> select * from HOT_ITEM_STATIS;
@@ -92,6 +97,7 @@ GET /recsys/goodsdata/WCJ7vW8BnuWS28ZqSZbG
 CREATE TABLE TOPIC_LIKE (USER VARCHAR NOT NULL PRIMARY KEY, PTY1 VARCHAR, PTY2 VARCHAR, PTY3 VARCHAR) SPLIT ON ('1', '2', '3', '4', '5', '6', '7', '8', '9');
 ```
 **提交spark流处理任务**
+
 每隔30分钟计算用户的类目偏好top3，计算公式：浏览次数*时间降权 groupBy求和取前3
 ```
 /usr/local/Cellar/apache-spark/2.4.4/libexec/bin/spark-submit \
@@ -116,6 +122,7 @@ CREATE TABLE TOPIC_LIKE (USER VARCHAR NOT NULL PRIMARY KEY, PTY1 VARCHAR, PTY2 V
 
 ## 召回融合过滤去重补足
 **融合逻辑：**
+
 协同过滤CF召回 + Faiss最近浏览召回 + 实时偏好召回，结果去重
 
 CF实现链接：https://github.com/xiaogp/recsys_spark
@@ -123,9 +130,11 @@ CF实现链接：https://github.com/xiaogp/recsys_spark
 Faiss实现链接：https://github.com/xiaogp/recsys_faiss
 
 **过滤逻辑**
+
 过滤掉用户已经看过的商品
 
 **补足逻辑**
+
 如果召回补足一定的数量，采用当下热门商品做补足
 
 ```

@@ -115,7 +115,9 @@ CREATE TABLE TOPIC_LIKE (USER VARCHAR NOT NULL PRIMARY KEY, PTY1 VARCHAR, PTY2 V
 ## 召回融合过滤去重补足
 **融合逻辑：**
 协同过滤CF召回 + Faiss最近浏览召回 + 实时偏好召回，结果去重
+
 CF实现链接：https://github.com/xiaogp/recsys_spark
+
 Faiss实现链接：https://github.com/xiaogp/recsys_faiss
 
 **过滤逻辑**

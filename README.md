@@ -30,6 +30,7 @@ kafka-console-consumer -bootstrap-server localhost:9092 -topic mylog -from-begin
 0: jdbc:phoenix:> CREATE TABLE HOT_ITEM_STATIS (HOUR VARCHAR NOT NULL PRIMARY KEY, HOT VARCHAR) SPLIT ON ('1', '2', '3', '4', '5', '6', '7', '8', '9');
 ```
 **提交spark流处理任务**
+每隔1个小时统计商品热度排名，商品热度权重：浏览1分，加入购物车2分，购买3分，groupBy求和取排名前200
 ```
 /usr/local/Cellar/apache-spark/2.4.4/libexec/bin/spark-submit \
 --master local[*] \
@@ -91,6 +92,7 @@ GET /recsys/goodsdata/WCJ7vW8BnuWS28ZqSZbG
 CREATE TABLE TOPIC_LIKE (USER VARCHAR NOT NULL PRIMARY KEY, PTY1 VARCHAR, PTY2 VARCHAR, PTY3 VARCHAR) SPLIT ON ('1', '2', '3', '4', '5', '6', '7', '8', '9');
 ```
 **提交spark流处理任务**
+每隔30分钟计算用户的类目偏好top3，计算公式：浏览次数*时间降权 groupBy求和取前3
 ```
 /usr/local/Cellar/apache-spark/2.4.4/libexec/bin/spark-submit \
 --master local[*] \
